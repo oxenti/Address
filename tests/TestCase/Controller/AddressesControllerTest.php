@@ -188,6 +188,8 @@ class AddressesControllerTest extends IntegrationTestCase
         $this->assertEquals($expected, $countEnd, 'message');
     }
 
+    
+
     /**
      * Test edit method
      * @dataProvider addProvider
@@ -219,25 +221,41 @@ class AddressesControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test delete method
+     * additionProvider method
      *
+     * @return array
+     */
+    
+    public function deleteProvider()
+    {
+        return [[1, true], [44, false]];
+    }
+
+    /**
+     * Test delete method
+     * @dataProvider deleteProvider
      * @return void
      */
-    public function testDelete()
+    public function testDelete($id, $responseStatus)
     {
-        $id = 1;
         $this->Addresses = TableRegistry::get('Address.Addresses');
         $countInitial = $this->Addresses->find()->count();
         $this->configRequest([
            'headers' => ['Accept' => 'application/json']
         ]);
-        $result = $this->delete('/adress/addresses/' . $id);
+        $result = $this->delete('/address/addresses/' . $id);
+        $countEnd = $this->Addresses->find()->count();
+        $address = $this->Addresses->find('all', ['withDeleted'])
+               ->where(['Addresses.id' => $id])
+               ->first();
+        if ($responseStatus) {
+            $this->assertResponseOk();
+            $this->assertNotEmpty($address, 'message');
+            $this->assertEquals(false, $address->is_active);
+        } else {
+            $this->assertResponseError();
+            $this->assertEmpty($address, 'message');
+        }
         // Check that the response was a 200
-        $this->assertResponseOk();
-        $student = $students->find('all', ['withDeleted'])
-           ->where(['Students.id' => 1]);
-           ->first();
-        $this->assertNotEmpty($student, 'message');
-        $this->assertEquals(false, $student->is_active);
     }
 }

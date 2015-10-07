@@ -117,10 +117,13 @@ class AddressesController extends AppController
         $this->request->allowMethod(['post', 'delete']);
         $address = $this->Addresses->get($id);
         if ($this->Addresses->delete($address)) {
-            $this->Flash->success(__('The address has been deleted.'));
+            $message = 'The user has been saved.';
+            $this->set([
+               'message' => $message,
+               '_serialize' => ['message']
+            ]);
         } else {
-            $this->Flash->error(__('The address could not be deleted. Please, try again.'));
+            throw new NotFoundException('The user could not be saved. Please, try again.');
         }
-        return $this->redirect(['action' => 'index']);
     }
 }
