@@ -47,7 +47,7 @@ class AddressesController extends AppController
     public function view($id = null)
     {
         $address = $this->Addresses->get($id, [
-            'contain' => []
+            'contain' => ['Cities', 'Cities.States', 'Cities.States.Countries']
         ]);
         $this->set('address', $address);
         $this->set('_serialize', ['address']);
@@ -64,14 +64,17 @@ class AddressesController extends AppController
         if ($this->request->is('post')) {
             $address = $this->Addresses->patchEntity($address, $this->request->data);
             if ($this->Addresses->save($address)) {
-                $this->Flash->success(__('The address has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                $message = 'The tutor has been saved.';
+                $this->set([
+                   'success' => true,
+                   'message' => $message,
+                   'id' => $address->id,
+                   '_serialize' => ['success', 'message', 'id'],
+                ]);
             } else {
-                $this->Flash->error(__('The address could not be saved. Please, try again.'));
+                throw new NotFoundException('The tutor could not be saved. Please, try again.');
             }
         }
-        $this->set(compact('address'));
-        $this->set('_serialize', ['address']);
     }
 
     /**
@@ -89,14 +92,17 @@ class AddressesController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $address = $this->Addresses->patchEntity($address, $this->request->data);
             if ($this->Addresses->save($address)) {
-                $this->Flash->success(__('The address has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                $message = 'The tutor has been saved.';
+                $this->set([
+                   'success' => true,
+                   'message' => $message,
+                   'id' => $address->id,
+                   '_serialize' => ['success', 'message', 'id'],
+                ]);
             } else {
-                $this->Flash->error(__('The address could not be saved. Please, try again.'));
+                throw new NotFoundException('The tutor could not be saved. Please, try again.');
             }
         }
-        $this->set(compact('address'));
-        $this->set('_serialize', ['address']);
     }
 
     /**

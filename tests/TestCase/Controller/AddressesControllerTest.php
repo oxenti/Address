@@ -53,21 +53,7 @@ class AddressesControllerTest extends IntegrationTestCase
 
         return [[$caso1, true], [$caso2, true], [$caso3, true], [$caso4, false]];
     }
-
-    /**
-     * additionProvider method
-     *
-     * @return array
-     */
-    
-    // public function viewProvider()
-    // {
-    //     $case1 = [
-
-    //     ]
-
-    //     return [[$caso1, true]];
-    // }
+   
 
     /**
      * Test index method
@@ -105,41 +91,131 @@ class AddressesControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test view method
+     * additionProvider method
      *
+     * @return array
+     */
+    
+    public function viewProvider()
+    {
+        $case1 = 1;
+        $case2 = 44;
+
+        return [[$case1, true], [$case2, false]];
+    }
+
+    /**
+     * Test view method
+     * @dataProvider viewProvider
      * @return void
      */
-    public function testView()
+    public function testView($id, $responseStatus)
     {
         $this->Addresses = TableRegistry::get('Address.Addresses');
-        $address = $this->Addresses->find()->where(['id' => 1]);
+        
+        $address = $this->Addresses
+            ->find()
+            ->contain([
+                'Cities',
+                'Cities.States',
+                'Cities.States.Countries'
+            ])
+            ->where(['Addresses.id' => $id])
+            ->first();
+
         $this->configRequest([
            'headers' => ['Accept' => 'application/json']
         ]);
-        $this->get('/address/addresses/1');
-        $this->assertResponseOK();
-        $expected = json_encode($address, JSON_PRETTY_PRINT);
-        $this->assertEquals($expected, $response, 'message');
+        $this->get('/address/addresses/' . $id);
+        if ($responseStatus) {
+            $this->assertResponseOK();
+            $response = $this->_response->body();
+            $expected = json_encode(['address' => $address], JSON_PRETTY_PRINT);
+            $this->assertEquals($expected, $response, 'message');
+        } else {
+            $this->assertResponseError();
+        }
+    }
+
+    /**
+     * additionProvider method
+     *
+     * @return array
+     */
+    
+    public function addProvider()
+    {
+        $case1 = [
+            'city_id' => 8,
+            'street' => 'test insert 1',
+            'neighborhood' => 'testeando',
+        ];
+        $case2 = [
+            'city_id' => 45,
+            'street' => 'test insert 2',
+            'neighborhood' => 'Lorem ipsum dolor sit amet',
+        ];
+
+        return [[$case1, true], [$case2, false]];
     }
 
     /**
      * Test add method
-     *
+     * @dataProvider addProvider
      * @return void
      */
-    public function testAdd()
+    public function testAdd($data, $responseStatus)
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->Addresses = TableRegistry::get('Address.Addresses');
+        $countInitial = $this->Addresses->find()->count();
+        $this->configRequest([
+           'headers' => ['Accept' => 'application/json']
+        ]);
+        $this->post('/address/addresses', $data);
+        $countEnd = $this->Addresses->find()->count();
+        if ($responseStatus) {
+            $this->assertResponseOK();
+            $expected = $countInitial + 1;
+            $response = json_decode($this->_response->body());
+            $record = $this->Addresses->get($response->id);
+            $this->assertEquals($data['city_id'], $record->city_id, 'message');
+            $this->assertEquals($data['street'], $record->street, 'message');
+            $this->assertEquals($data['neighborhood'], $record->neighborhood, 'neighborhood');
+        } else {
+            $this->assertResponseError();
+            $expected = $countInitial;
+        }
+        $this->assertEquals($expected, $countEnd, 'message');
     }
 
     /**
      * Test edit method
-     *
+     * @dataProvider addProvider
      * @return void
      */
-    public function testEdit()
+    public function testEdit($data, $responseStatus)
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $id = 1;
+        $this->Addresses = TableRegistry::get('Address.Addresses');
+        $countInitial = $this->Addresses->find()->count();
+        $this->configRequest([
+           'headers' => ['Accept' => 'application/json']
+        ]);
+        $this->put('/address/addresses/' . $id, $data);
+        $countEnd = $this->Addresses->find()->count();
+        $expected = $countInitial;
+        if ($responseStatus) {
+            $this->assertResponseOK();
+            $response = json_decode($this->_response->body());
+            $this->assertEquals($id, $response->id, 'message');
+            $record = $this->Addresses->get($response->id);
+            $this->assertEquals($data['city_id'], $record->city_id, 'message');
+            $this->assertEquals($data['street'], $record->street, 'message');
+            $this->assertEquals($data['neighborhood'], $record->neighborhood, 'neighborhood');
+        } else {
+            $this->assertResponseError();
+        }
+        $this->assertEquals($expected, $countEnd, 'message');
     }
 
     /**
@@ -149,6 +225,19 @@ class AddressesControllerTest extends IntegrationTestCase
      */
     public function testDelete()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $id = 1;
+        $this->Addresses = TableRegistry::get('Address.Addresses');
+        $countInitial = $this->Addresses->find()->count();
+        $this->configRequest([
+           'headers' => ['Accept' => 'application/json']
+        ]);
+        $result = $this->delete('/adress/addresses/' . $id);
+        // Check that the response was a 200
+        $this->assertResponseOk();
+        $student = $students->find('all', ['withDeleted'])
+           ->where(['Students.id' => 1]);
+           ->first();
+        $this->assertNotEmpty($student, 'message');
+        $this->assertEquals(false, $student->is_active);
     }
 }
