@@ -41,10 +41,17 @@ class Address extends Entity
      */
     protected function _getFullAddress()
     {
-        $address = /*$this->_properties['street']
-            . ', ' . */$this->_properties['complement']
-            . ', ' . $this->_properties['neighborhood'];
+        $address = '';
 
+        if (isset($this->_properties['street'])) {
+            $address .= ', ' . $this->_properties['street'];
+        }
+        if (isset($this->_properties['complement'])) {
+            $address .= ', ' . $this->_properties['complement'];
+        }
+        if (isset($this->_properties['neighborhood'])) {
+            $address .= ', ' . $this->_properties['neighborhood'];
+        }
         if (isset($this->_properties['city'])) {
             $address .= ', ' . $this->_properties['city']->name;
         }
@@ -54,9 +61,8 @@ class Address extends Entity
         if (isset($this->_properties['city']->state->country->name)) {
             $address .= ', ' . $this->_properties['city']->state->country->name;
         }
-
-        if ($this->_properties['zipcode']) {
-            $address .= ', CEP:' . $this->_properties['zipcode'];
+        if (isset($this->_properties['zipcode'])) {
+            $address .= ($this->_properties['zipcode']) ? (', CEP:' . $this->_properties['zipcode']) : '';
         }
 
         return $address;

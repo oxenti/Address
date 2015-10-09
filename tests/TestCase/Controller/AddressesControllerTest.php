@@ -54,7 +54,6 @@ class AddressesControllerTest extends IntegrationTestCase
         return [[$caso1, true], [$caso2, true], [$caso3, true], [$caso4, false]];
     }
    
-
     /**
      * Test index method
      * @dataProvider additionProvider
@@ -81,7 +80,7 @@ class AddressesControllerTest extends IntegrationTestCase
         ]);
         $this->get('/address/addresses' . '?' . $caso['params']);
         if ($responseStatus) {
-            $response = json_decode($this->_response->body());
+            $response = json_decode($this->_response->body(), JSON_PRETTY_PRINT);
             $expected = json_encode($addresses, JSON_PRETTY_PRINT);
             $this->assertResponseOK();
             $this->assertEquals($expected, json_encode($response->addresses, JSON_PRETTY_PRINT));

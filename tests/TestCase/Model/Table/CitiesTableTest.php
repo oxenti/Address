@@ -135,9 +135,10 @@ class CitiesTableTest extends TestCase
         ];
         $case2 = $this->Cities->newEntity($case2);
         $result = $this->Cities->save($case2);
-        $this->assertFalse($result, 'entrada invalida não retornou false no save');
+        $this->assertFalse($result, __('Saving invalid cities'));
+        
         $expected = ['state_id' => ['_existsIn' => 'This value does not exist']];
         $errors = $case2->errors();
-        $this->assertEquals($expected, $errors, 'erros retornado não corresponde ao esperado');
+        $this->assertEquals($expected, $errors, __('_existsIn validation for state_id failed'));
     }
 }
