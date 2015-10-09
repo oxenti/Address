@@ -2,21 +2,23 @@
 namespace Address\Model\Table;
 
 use Address\Model\Entity\Address;
+use Address\Model\Table\AppTable;
+use Cake\Core\Configure;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
 use Cake\Validation\Validator;
-use SoftDelete\Model\Table\SoftDeleteTrait;
+
+// use SoftDelete\Model\Table\SoftDeleteTrait;
 
 /**
  * Addresses Model
  *
  * @property \Cake\ORM\Association\BelongsTo $Cities
  */
-class AddressesTable extends Table
+class AddressesTable extends AppTable
 {
 
-    use SoftDeleteTrait;
+    // use SoftDeleteTrait;
     
     /**
      * Initialize method
@@ -39,6 +41,8 @@ class AddressesTable extends Table
             'joinType' => 'INNER',
             'className' => 'Address.Cities'
         ]);
+
+        $this->_setAppRelations(Configure::read('address_plugin.relations'));
     }
 
     /**
@@ -85,6 +89,6 @@ class AddressesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['city_id'], 'Cities'));
-        return $rules;
+        return $this->_setExtraBuildRules($rules, Configure::read('address_plugin.rules'));
     }
 }

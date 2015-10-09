@@ -33,4 +33,32 @@ class Address extends Entity
     ];
 
     protected $_hidden = ['created', 'is_active', 'modified'];
+
+    protected $_virtual = ['full_address'];
+
+    /**
+     * virtual field full name
+     */
+    protected function _getFullAddress()
+    {
+        $address = /*$this->_properties['street']
+            . ', ' . */$this->_properties['complement']
+            . ', ' . $this->_properties['neighborhood'];
+
+        if (isset($this->_properties['city'])) {
+            $address .= ', ' . $this->_properties['city']->name;
+        }
+        if (isset($this->_properties['city']->state->uf)) {
+            $address .= '-' . $this->_properties['city']->state->uf;
+        }
+        if (isset($this->_properties['city']->state->country->name)) {
+            $address .= ', ' . $this->_properties['city']->state->country->name;
+        }
+
+        if ($this->_properties['zipcode']) {
+            $address .= ', CEP:' . $this->_properties['zipcode'];
+        }
+
+        return $address;
+    }
 }
