@@ -23,6 +23,22 @@ class AddressesController extends AppController
     }
 
     /**
+     * Initialization hook method.
+     *
+     * Use this method to add common initialization code like loading components.
+     *
+     * e.g. `$this->loadComponent('Security');`
+     *
+     * @return void
+     */
+    public function initialize()
+    {
+        parent::initialize();
+
+        $this->loadComponent('Address.Address');
+    }
+
+    /**
      * Index method
      *
      * @return void
@@ -149,5 +165,18 @@ class AddressesController extends AppController
         } else {
             throw new BadRequestException(__('The address could not be removed'));
         }
+    }
+
+    /**
+     * getAddressByZipcode method Gets addres information from zipcodes
+     * @param string $zipcode Address' zipcode
+     */
+    public function getAddressByZipcode($zipcode)
+    {
+        $address = $this->Address->getByZipcode($zipcode);
+        $this->set([
+           'address' => $address,
+           '_serialize' => ['address']
+        ]);
     }
 }
