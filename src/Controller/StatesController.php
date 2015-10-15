@@ -18,10 +18,26 @@ class StatesController extends AppController
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Countries']
-        ];
-        $this->set('states', $this->paginate($this->States->find('list')));
-        $this->set('_serialize', ['states']);
+        $full = isset($this->request->query['complete'])?$this->request->query['complete']:false;
+        $finder = $full ? 'all' : 'list';
+            
+        if (! isset($this->request->params['country_id'])) {
+            $this->paginate = [
+                'finder' => $finder,
+                'limit' => 30,
+                'contain' => ['Countries'],
+                'order' => ['States.name']
+            ];
+
+            if (isset($this->request->query['limt'])) {
+                $this->paginate['limit'] = $this->request->query['limt'];
+            }
+
+            $this->set('states', $this->paginate($this->States));
+            $this->set('_serialize', ['states']);
+        } else {
+            $this->set('states', $this->States->find($finder)->where(['country_id' => $this->request->params['country_id']]));
+            $this->set('_serialize', ['states']);
+        }
     }
 }
