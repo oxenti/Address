@@ -12,8 +12,6 @@ class AddAddressTable extends AbstractMigration
         $table
             ->addColumn('city_id', 'integer', [
                 'limit' => 11
-            ])->addColumn('user_id', 'integer', [
-                'limit' => 11
             ])
             ->addColumn('street', 'string', [
                'default' => null,
