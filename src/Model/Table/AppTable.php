@@ -2,12 +2,15 @@
 namespace Address\Model\Table;
 
 use Cake\ORM\Table;
+use SoftDelete\Model\Table\SoftDeleteTrait;
 
 /**
- * AppTable Model
+ * App Table class
  */
 class AppTable extends Table
 {
+
+    use SoftDeleteTrait;
     
     /**
      * Set the plugin's custom database connection
