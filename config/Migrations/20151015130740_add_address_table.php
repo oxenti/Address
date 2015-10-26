@@ -23,6 +23,26 @@ class AddAddressTable extends AbstractMigration
                'limit' => 45,
                'null' => false,
             ])
+            ->addColumn('complement', 'string', [
+               'default' => null,
+               'limit' => 30,
+               'null' => true,
+            ])
+            ->addColumn('zipcode', 'string', [
+               'default' => null,
+               'limit' => 9,
+               'null' => false,
+            ])
+            ->addColumn('lat', 'float', [
+               'default' => null,
+               'limit' => '10,6',
+               'null' => false,
+            ])
+            ->addColumn('lng', 'float', [
+               'default' => null,
+               'limit' => '10,6',
+               'null' => false,
+            ])
             ->addColumn('is_active', 'boolean', [
                 'default' => 1,
             ])
