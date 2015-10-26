@@ -35,6 +35,9 @@ class AddressesTable extends AppTable
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
+        $this->addBehavior('Geo.Geocoder', [
+            'language' => 'pt'
+        ]);
 
         $this->belongsTo('Cities', [
             'foreignKey' => 'city_id',
