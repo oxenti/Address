@@ -32,7 +32,7 @@ class Address extends Entity
         'id' => false,
     ];
 
-    protected $_hidden = ['created', 'is_active', 'modified'];
+    protected $_hidden = ['created', 'is_active', 'modified', '_joinData'];
 
     protected $_virtual = ['full_address'];
 
