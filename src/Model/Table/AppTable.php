@@ -12,6 +12,14 @@ class AppTable extends Table
 
     use SoftDeleteTrait;
     
+    public function initialize(array $config)
+    {
+        parent::initialize($config);
+        
+        $this->addBehavior('Address.Addressable');
+        $this->addBehavior('Address.Associatable');
+    }
+
     /**
      * Set the plugin's custom database connection
      *
