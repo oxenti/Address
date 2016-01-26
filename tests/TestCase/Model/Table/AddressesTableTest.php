@@ -98,7 +98,7 @@ class AddressesTableTest extends TestCase
      */
     public function testValidationDefault($cases)
     {
-         //caso valido
+        //caso valido
         $errors = $this->Addresses->validator()->errors($cases[0]);
         $this->assertEmpty($errors, 'Dados validos foram considerados invalidos para Address');
 
