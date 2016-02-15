@@ -35,9 +35,10 @@ class AddressesTable extends AppTable
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
-        $this->addBehavior('Geo.Geocoder', [
-            'language' => 'pt'
-        ]);
+        $this->addBehavior('Address.Geocodable');
+        // $this->addBehavior('Geo.Geocoder', [
+        //     'language' => 'pt'
+        // ]);
 
         $this->belongsTo('Cities', [
             'foreignKey' => 'city_id',
@@ -93,5 +94,81 @@ class AddressesTable extends AppTable
     {
         $rules->add($rules->existsIn(['city_id'], 'Cities'));
         return $this->_setExtraBuildRules($rules, Configure::read('address_plugin.rules'));
+    }
+
+    public function beforeSave($event, $entity, $options)
+    {
+        if ($entity->manually_updated) {
+            $address = $this->parseGeocodedAddress($this->decodeAddress($entity->lat, $entity->lng));
+
+            foreach ($address as $key => $value) {
+                $entity->$key = $value;
+            }
+            $entity->formatted_address = $this->formattedAddress($entity);
+            $entity->manually_updated = false;
+
+        } else {
+            $formattedAddress = $this->formattedAddress($entity);
+            $coordinates = $this->getCoordinates($formattedAddress);
+
+            if (! $coordinates) {
+                $coordinates = $this->getCoordinates($this->formattedNeighborhood($entity));
+            }
+
+            if (! $coordinates) {
+                return false;
+            }
+
+            $entity->lat = $coordinates[0];
+            $entity->lng = $coordinates[1];
+            $entity->formatted_address = $formattedAddress;
+        }
+    }
+
+    protected function formattedAddress($entity)
+    {
+        $city = $this->Cities->get($entity->city_id, ['contain' => 'States']);
+        $address = '';
+        if ($entity->street) {
+            $address .= $entity->street;
+        }
+
+        if ($entity->complement) {
+            $address .= ', ' . $entity->complement;
+        }
+
+        if ($entity->neighborhood) {
+            $address .= ' - ' . $entity->neighborhood;
+        }
+
+        if (isset($city->name)) {
+            $address .= ', ' . $city->name . ', ' . $city->state->uf;
+        }
+        
+        return $address;
+    }
+
+    protected function formattedNeighborhood($entity)
+    {
+        $city = $this->Cities->get($entity->city_id);
+        $address = '';
+        if ($entity->neighborhood) {
+            $address .= $entity->neighborhood;
+        }
+        if ($city->name) {
+            $address .= ($address == '') ? $city->name . ', ' . $city->state->uf : ', ' . $city->name . ', ' . $city->state->uf;
+        }
+        return $address;
+    }
+
+    protected function parseGeocodedAddress($address) {
+        if (isset($address['city'])) {
+            $city = $this->Cities->findByName($address['city'])
+                ->first();
+            $address['city_id'] = $city->id;
+            unset($address['city']);
+        }
+        
+        return $address;
     }
 }
