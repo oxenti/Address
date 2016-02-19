@@ -114,11 +114,11 @@ class AddressesTable extends AppTable
             if (! $coordinates) {
                 $coordinates = $this->getCoordinates($this->formattedNeighborhood($entity));
             }
-
+           
             if (! $coordinates) {
                 return false;
             }
-
+            
             $entity->lat = $coordinates[0];
             $entity->lng = $coordinates[1];
             $entity->formatted_address = $formattedAddress;
@@ -158,6 +158,7 @@ class AddressesTable extends AppTable
         if ($city->name) {
             $address .= ($address == '') ? $city->name . ', ' . $city->state->uf : ', ' . $city->name . ', ' . $city->state->uf;
         }
+        
         return $address;
     }
 
