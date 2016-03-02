@@ -2,6 +2,7 @@
 namespace Address\Model\Table;
 
 use Cake\ORM\Table;
+
 use SoftDelete\Model\Table\SoftDeleteTrait;
 
 /**

@@ -2,6 +2,7 @@
 namespace Address\Model\Entity;
 
 use Cake\ORM\Entity;
+use Cake\ORM\TableRegistry;
 
 /**
  * Address Entity.
@@ -32,8 +33,8 @@ class Address extends Entity
         'id' => false,
     ];
 
-    protected $_hidden = ['created', 'is_active', 'modified', '_joinData'];
 
+    protected $_hidden = ['created', 'is_active', 'modified'];
     protected $_virtual = ['full_address'];
 
     /**
@@ -53,6 +54,11 @@ class Address extends Entity
             $address .= ', ' . $this->_properties['neighborhood'];
         }
         if (isset($this->_properties['city'])) {
+            if (! isset($this->_properties['city']->name) && isset($this->_properties['city_id'])) {
+                $Cities = TableRegistry::get('Cities');
+                $city = $Cities->get($this->_properties['city_id'], ['contain' => ['Cities', 'Cities.States', 'Cities.States.Countries']]);
+                $this->_properties['city'] = $city;
+            }
             $address .= ', ' . $this->_properties['city']->name;
         }
         if (isset($this->_properties['city']->state->uf)) {

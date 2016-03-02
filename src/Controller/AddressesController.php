@@ -171,12 +171,12 @@ class AddressesController extends AppController
      * getAddressByZipcode method Gets addres information from zipcodes
      * @param string $zipcode Address' zipcode
      */
-    public function getAddressByZipcode($zipcode)
-    {
-        $address = $this->Address->getByZipcode($zipcode);
-        $this->set([
-           'address' => $address,
-           '_serialize' => ['address']
-        ]);
-    }
+    // public function getAddressByZipcode($zipcode)
+    // {
+    //     $address = $this->Address->getByZipcode($zipcode);
+    //     $this->set([
+    //        'address' => $address,
+    //        '_serialize' => ['address']
+    //     ]);
+    // }
 }
