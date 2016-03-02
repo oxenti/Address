@@ -35,16 +35,7 @@ class AddressesTable extends AppTable
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
-<<<<<<< HEAD
-        $this->addBehavior('Geo.Geocoder', [
-            'address' => 'full_address',
-        ]);
-=======
         $this->addBehavior('Address.Geocodable');
-        // $this->addBehavior('Geo.Geocoder', [
-        //     'language' => 'pt'
-        // ]);
->>>>>>> dev
 
         $this->belongsTo('Cities', [
             'foreignKey' => 'city_id',
@@ -100,8 +91,6 @@ class AddressesTable extends AppTable
     {
         $rules->add($rules->existsIn(['city_id'], 'Cities'));
         return $this->_setExtraBuildRules($rules, Configure::read('address_plugin.rules'));
-<<<<<<< HEAD
-=======
     }
 
     public function beforeSave($event, $entity, $options)
@@ -179,7 +168,6 @@ class AddressesTable extends AppTable
         }
         
         return $address;
->>>>>>> dev
     }
 
     /**
