@@ -5,8 +5,7 @@
     "require": {
         "php": ">=5.4.16",
         "cakephp/cakephp": "~3.0",
-        "oxenti/soft-delete": "dev-master",
-        "dereuromark/cakephp-geo": "dev-master"
+        "oxenti/soft-delete": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "*"

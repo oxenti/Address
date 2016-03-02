@@ -2,4 +2,4 @@
 
 use Cake\Core\Plugin;
 
-Plugin::load('Geo', ['bootstrap' => true]);
+// Plugin::load('Geo', ['bootstrap' => true]);
