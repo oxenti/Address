@@ -10,6 +10,14 @@ use Address\Controller\AppController;
  */
 class CitiesController extends AppController
 {
+    /**
+     * beforeFilter Method
+     */
+    public function beforeFilter(Event $event)
+    {
+        parent::beforeFilter($event);
+        $this->Auth->allow(['*']);
+    }
 
     /**
      * Index method
