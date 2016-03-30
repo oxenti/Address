@@ -2,6 +2,7 @@
 namespace Address\Controller;
 
 use Address\Controller\AppController;
+use Cake\Event\Event;
 
 /**
  * Cities Controller
