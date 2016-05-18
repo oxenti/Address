@@ -95,15 +95,13 @@ class AddressesTable extends AppTable
 
     public function beforeSave($event, $entity, $options)
     {
-        if ($entity->manually_updated) {
-            $address = $this->parseGeocodedAddress($this->decodeAddress($entity->lat, $entity->lng));
+        if (($entity->getOriginal('lat') != $entity->lat) || ($entity->getOriginal('lng') != $entity->lng)) {
+             $address = $this->parseGeocodedAddress($this->decodeAddress($entity->lat, $entity->lng));
 
             foreach ($address as $key => $value) {
                 $entity->$key = $value;
             }
             $entity->formatted_address = $this->formattedAddress($entity);
-            $entity->manually_updated = false;
-
         } else {
             $formattedAddress = $this->formattedAddress($entity);
             $coordinates = $this->getCoordinates($formattedAddress);
