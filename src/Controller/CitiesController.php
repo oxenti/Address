@@ -17,7 +17,7 @@ class CitiesController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $this->Auth->allow(['index']);
+        $this->Auth->allow(['index', 'citiesByName']);
     }
 
     /**
@@ -37,8 +37,12 @@ class CitiesController extends AppController
                 'order' => ['Cities.name'],
             ];
 
-            if (isset($this->request->query['limt'])) {
+            if (isset($this->request->query['limit'])) {
                 $this->paginate['limit'] = $this->request->query['limt'];
+            }
+
+            if (isset($this->request->query['name'])) {
+                $this->paginate['conditions'] = ['Cities.name LIKE' => $this->request->query['name'] . '%'];
             }
 
             $this->set('cities', $this->paginate($this->Cities));
