@@ -44,16 +44,16 @@ class Address extends Entity
     {
         $address = '';
 
-        if (isset($this->_properties['street'])) {
+        if (! empty($this->_properties['street'])) {
             $address .= $this->_properties['street'];
         }
-        if (isset($this->_properties['complement'])) {
+        if (! empty($this->_properties['complement'])) {
             $address .= ', ' . $this->_properties['complement'];
         }
-        if (isset($this->_properties['neighborhood'])) {
+        if (! empty($this->_properties['neighborhood'])) {
             $address .= ', ' . $this->_properties['neighborhood'];
         }
-        if (isset($this->_properties['city'])) {
+        if (! empty($this->_properties['city'])) {
             if (! isset($this->_properties['city']->name) && isset($this->_properties['city_id'])) {
                 $Cities = TableRegistry::get('Cities');
                 $city = $Cities->get($this->_properties['city_id'], ['contain' => ['Cities', 'Cities.States', 'Cities.States.Countries']]);
@@ -61,14 +61,14 @@ class Address extends Entity
             }
             $address .= ', ' . $this->_properties['city']->name;
         }
-        if (isset($this->_properties['city']->state->uf)) {
-            $address .= '-' . $this->_properties['city']->state->uf;
+        if (! empty($this->_properties['city']->state->uf)) {
+            $address .= ' - ' . $this->_properties['city']->state->uf;
         }
-        if (isset($this->_properties['city']->state->country->name)) {
+        if (! empty($this->_properties['city']->state->country->name)) {
             $address .= ', ' . $this->_properties['city']->state->country->name;
         }
-        if (isset($this->_properties['zipcode'])) {
-            $address .= ($this->_properties['zipcode']) ? (', CEP:' . $this->_properties['zipcode']) : '';
+        if (! empty($this->_properties['zipcode'])) {
+            $address .= ($this->_properties['zipcode']) ? (', CEP: ' . $this->_properties['zipcode']) : '';
         }
 
         return $address;
