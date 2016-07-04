@@ -45,7 +45,7 @@ class Address extends Entity
         $address = '';
 
         if (isset($this->_properties['street'])) {
-            $address .= ', ' . $this->_properties['street'];
+            $address .= $this->_properties['street'];
         }
         if (isset($this->_properties['complement'])) {
             $address .= ', ' . $this->_properties['complement'];
