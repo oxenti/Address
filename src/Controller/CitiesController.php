@@ -17,7 +17,7 @@ class CitiesController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $this->Auth->allow(['index', 'citiesByName']);
+        $this->Auth->allow(['view', 'index']);
     }
 
     /**
@@ -50,6 +50,23 @@ class CitiesController extends AppController
         } else {
             $this->set('cities', $this->Cities->find($finder)->where(['state_id' => $this->request->params['state_id']]));
             $this->set('_serialize', ['cities']);
+        }
+    }
+
+     /**
+     * view method
+     *
+     * @return void
+     */
+    public function view($cityId = null)
+    {
+        if($cityId) {
+            $this->set('city', $this->Cities->get($cityId));
+            $this->set('_serialize', ['city']);
+        }
+        else {
+            $this->set('city', []);
+            $this->set('_serialize', ['city']);
         }
     }
 }
