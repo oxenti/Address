@@ -61,7 +61,9 @@ class CitiesController extends AppController
     public function view($cityId = null)
     {
         if($cityId) {
-            $this->set('city', $this->Cities->get($cityId));
+            $this->set('city', $this->Cities->get($cityId,[
+                'contain' => ['States']
+            ]));
             $this->set('_serialize', ['city']);
         }
         else {
